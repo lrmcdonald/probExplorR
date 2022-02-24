@@ -1,7 +1,5 @@
 ---
 title: "Probability Distribution Exporer"
-author: "L. R. McDonald"
-date: "2/23/2022"
 output: html_document
 runtime: shiny
 ---
@@ -617,6 +615,9 @@ server <- function(input, output) {
 
 # Run the application
 shinyApp(ui = ui, server = server, 
-         options = list(height = 1000, width = "100%"))
+         options = list(height = 800, width = "100%"))
 # shiny::reactlogShow()
 ```
+
+
+**Created by L. R. McDonald on 2022-02-23.**
