@@ -1,4 +1,6 @@
 # probExplorR
-A shiny app for viewing probability distributions.
+This shiny app was developed to dynamically view probability distributions.
 
-![Example of the Probability Distribution Explorer Window](./img/probExplorR_example.png)
+### An example window is shown below:
+
+![](./img/probExplorR_example.png)
