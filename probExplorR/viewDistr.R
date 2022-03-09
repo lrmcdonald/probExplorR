@@ -1,6 +1,10 @@
 libs = c("ggplot2")
 lapply(libs, require, character.only = T)
 
+# ADD MOMENT GENERATORS
+# ADD HALF NORMAL + other rstan functions in https://mc-stan.org/docs/2_29/functions-reference/von-mises-distribution.html
+# ADD output code for random number generation of each distribution
+
 # Discrete Variables ####
 # Binomial
 # Number of successes in n trials
