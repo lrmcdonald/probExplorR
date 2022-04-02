@@ -161,8 +161,8 @@ plnormd = function(x = seq(0, 5, by = 0.01), # outcome
   df = data.frame(Value = x, Density = dens)
   ggplot(df) + geom_line(aes(x = Value, y = Density)) + 
     theme_minimal() + labs(title = "Log-Normal Probability Distribution",
-                           x = paste0("Outcomes with a mean of ", round(log(mu), 2), 
-                                      " and a standard deviation of ", round(log(sigma), 2), 
+                           x = paste0("Outcomes with a mean of ", round(exp(mu), 2), 
+                                      " and a standard deviation of ", round(exp(sigma), 2), 
                                       " (meanlog = ", round(mu, 2), 
                                       ", sdlog = ", round(sigma, 2), ")"))
 }

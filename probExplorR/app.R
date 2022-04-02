@@ -227,6 +227,38 @@ ui <- fluidPage(
                      , 
                      plotOutput("plot_norm")), # End of inner tabPanel
             #####
+            tabPanel(title = "Log-Normal",
+                     h3("Parameters")
+                     ,
+                     fluidRow(
+                         column(4,
+                                h4("Mean Outcome:"),
+                                numericInput("lnorm_mu", label = NULL, value = 2,
+                                             step = 0.1)),
+                         column(4,
+                                h4("Standard Deviation:"),
+                                numericInput("lnorm_sigma", label = NULL, value = 2,
+                                             step = 0.1)),
+                         column(4,
+                                h4("Are Parameters on the Log Scale?"),
+                                checkboxInput("logpars", label = NULL, value = FALSE, width = NULL))
+                     ) # End row
+                     ,
+                     h3("Inputs"),
+                     fluidRow(
+                         column(6,
+                                h4("Minimum Outcome:"),
+                                numericInput("lnorm_min", label = NULL, step = 0.5,
+                                             value = 0))
+                         ,
+                         column(6,
+                                h4("Maximum Outcome:"),
+                                numericInput("lnorm_max", label = NULL, step = 0.5,
+                                             value = 15))
+                     ) # End row
+                     ,
+                     plotOutput("plot_lnorm")), # End of inner tabPanel
+            #####
             tabPanel(title = "Exponential", 
                      h3("Parameters")
                      ,
