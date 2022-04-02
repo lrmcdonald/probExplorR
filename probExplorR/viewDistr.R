@@ -152,14 +152,19 @@ pnormd = function(x = seq(0, 100, by = 0.01), # outcome
 
 plnormd = function(x = seq(0, 5, by = 0.01), # outcome
                    mu = 5, # mean value
-                   sigma = 2 # standard deviation
+                   sigma = 2, # standard deviation
+                   logpars = F # whether input is log scale or not - if false - take log
 ){
-  dens = dnorm(x =x, mean = mu, sd = sigma, log = T)
+  mu = ifelse(logpars, mu, log(mu))
+  sigma = ifelse(logpars, sigma, log(sigma))
+  dens = dlnorm(x = x, meanlog = mu, sdlog = sigma)
   df = data.frame(Value = x, Density = dens)
   ggplot(df) + geom_line(aes(x = Value, y = Density)) + 
-    theme_minimal() + labs(title = "Normal Log-Probability Distribution",
-                           x = paste0("Outcomes with a mean of ", mu, 
-                                      " and a standard deviation of ", sigma))
+    theme_minimal() + labs(title = "Log-Normal Probability Distribution",
+                           x = paste0("Outcomes with a mean of ", round(log(mu), 2), 
+                                      " and a standard deviation of ", round(log(sigma), 2), 
+                                      " (meanlog = ", round(mu, 2), 
+                                      ", sdlog = ", round(sigma, 2), ")"))
 }
 # plnormd()
 

@@ -168,14 +168,19 @@ pnormd = function(x = seq(0, 100, by = 0.01), # outcome
 
 plnormd = function(x = seq(0, 5, by = 0.01), # outcome
                    mu = 5, # mean value
-                   sigma = 2 # standard deviation
+                   sigma = 2, # standard deviation
+                   logpars = F # whether input is log scale or not - if false - take log
 ){
-   dens = dnorm(x =x, mean = mu, sd = sigma, log = T)
-   df = data.frame(Value = x, Density = dens)
-   ggplot(df) + geom_line(aes(x = Value, y = Density)) + 
-      theme_minimal() + labs(title = "Normal Log-Probability Distribution",
-                             x = paste0("Outcomes with a mean of ", mu, 
-                                        " and a standard deviation of ", sigma))
+  mu = ifelse(logpars, mu, log(mu))
+  sigma = ifelse(logpars, sigma, log(sigma))
+  dens = dlnorm(x = x, meanlog = mu, sdlog = sigma)
+  df = data.frame(Value = x, Density = dens)
+  ggplot(df) + geom_line(aes(x = Value, y = Density)) + 
+    theme_minimal() + labs(title = "Log-Normal Probability Distribution",
+                           x = paste0("Outcomes with a mean of ", round(exp(mu), 2), 
+                                      " and a standard deviation of ", round(exp(sigma), 2), 
+                                      " (meanlog = ", round(mu, 2), 
+                                      ", sdlog = ", round(sigma, 2), ")"))
 }
 # plnormd()
 
@@ -409,7 +414,7 @@ ui <- fluidPage(
                plotOutput("plot_hyper"))# End of inner tabPanel
       #####
       ) # End of navlistPanel
-    ) # End of outer tabPanel
+    ) # End of discrete tabPanel
     ,
     # Continuous Panel ####
     tabPanel("Continuous", navlistPanel(
@@ -433,7 +438,7 @@ ui <- fluidPage(
                  column(6,
                         h4("Minimum Outcome:"),
                         numericInput("unif_min", label = NULL, step = 0.5,
-                                     value = 1))
+                                     value = 0))
                  ,
                  column(6,
                         h4("Maximum Outcome:"),
@@ -449,11 +454,11 @@ ui <- fluidPage(
                fluidRow(
                  column(6,
                         h4("Mean Outcome:"),
-                        numericInput("norm_mu", label = NULL, value = 5,
+                        numericInput("norm_mu", label = NULL, value = 0,
                                      step = 0.1)),
                  column(6,
                         h4("Standard Deviation:"),
-                        numericInput("norm_sigma", label = NULL, value = 2.5,
+                        numericInput("norm_sigma", label = NULL, value = 1,
                                      step = 0.1))
                  ) # End row
                ,
@@ -462,15 +467,47 @@ ui <- fluidPage(
                  column(6,
                         h4("Minimum Outcome:"),
                         numericInput("norm_min", label = NULL, step = 0.5,
-                                     value = 1))
+                                     value = -5))
                  ,
                  column(6,
                         h4("Maximum Outcome:"),
                         numericInput("norm_max", label = NULL, step = 0.5,
-                                     value = 15))
+                                     value = 5))
                  ) # End row
                ,
                plotOutput("plot_norm")), # End of inner tabPanel
+      #####
+            tabPanel(title = "Log-Normal",
+               h3("Parameters")
+               ,
+               fluidRow(
+                 column(4,
+                        h4("Mean Outcome:"),
+                        numericInput("lnorm_mu", label = NULL, value = 2,
+                                     step = 0.1)),
+                 column(4,
+                        h4("Standard Deviation:"),
+                        numericInput("lnorm_sigma", label = NULL, value = 2,
+                                     step = 0.1)),
+                 column(4,
+                        h4("Are Parameters on the Log Scale?"),
+                        checkboxInput("logpars", label = NULL, value = FALSE, width = NULL))
+                 ) # End row
+               ,
+               h3("Inputs"),
+               fluidRow(
+                 column(6,
+                        h4("Minimum Outcome:"),
+                        numericInput("lnorm_min", label = NULL, step = 0.5,
+                                     value = 0))
+                 ,
+                 column(6,
+                        h4("Maximum Outcome:"),
+                        numericInput("lnorm_max", label = NULL, step = 0.5,
+                                     value = 15))
+                 ) # End row
+               ,
+               plotOutput("plot_lnorm")), # End of inner tabPanel
       #####
       tabPanel(title = "Exponential",
                h3("Parameters")
@@ -596,6 +633,10 @@ server <- function(input, output) {
   output$plot_norm <- renderPlot({
     x = seq(input$norm_min, input$norm_max, by = 0.01)
     pnormd(x = x, mu = input$norm_mu, sigma = input$norm_sigma)
+    })
+    output$plot_lnorm <- renderPlot({
+    x = seq(input$lnorm_min, input$lnorm_max, by = 0.01)
+    plnormd(x = x, mu = input$lnorm_mu, sigma = input$lnorm_sigma, logpars = input$logpars)
     })
   output$plot_exp <- renderPlot({
     x = seq(input$exp_min, input$exp_max, by = 0.01)
